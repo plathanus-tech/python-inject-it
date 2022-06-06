@@ -1,0 +1,9 @@
+# Packaging
+.pdm.toml
+__pypackages__
+
+# Cache
+__pycache__
+*.pyc
+.mypy_cache
+.pytest_cache
