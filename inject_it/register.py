@@ -1,7 +1,10 @@
+from contextlib import contextmanager
+import contextlib
+from functools import partial
 from typing import Any, Optional
 from .objects import Provider
 from .stubs import Class, Function
-from .exceptions import InvalidDependency
+from .exceptions import DependencyNotRegistered, InvalidDependency
 
 
 def register_dependency(obj: Any, bound_type: Optional[Class] = None) -> None:
@@ -39,3 +42,23 @@ def register_provider(type_: Class, fnc: Function, cache_dependency: bool) -> No
         cache_dependency=cache_dependency,
         expected_return_type=type_,
     )
+
+
+@contextmanager
+def additional_kwargs_to_provider(type_: Class, **kwargs):
+    """Context manager that applies the given `kwargs` to the provider function previously registered.
+    At the end, rollbacks to the original function. It's useful when your dependency is created on the
+    fly using some additional parameters, like the current user in a HTTP Request, the current state of
+    some object.
+    """
+    from ._injector import _get_provider, providers
+
+    provider = _get_provider(type_)
+
+    providers[type_] = Provider(
+        fnc=partial(provider.fnc, **kwargs),
+        expected_return_type=provider.expected_return_type,
+        cache_dependency=provider.cache_dependency,
+    )
+    yield
+    providers[type_] = provider

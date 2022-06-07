@@ -120,7 +120,65 @@ This will have the same effect as calling `register_dependency` after creating t
 
 Your provider can also `requires` a dependency, but it must be registered before it.
 
-# Depending on abstract classes
+## Conditional arguments to Provider
+
+Sometimes you will want to create a service dinamically, using some attributes for the current context of your application. For example, on a HTTP view passing the current user to the provider, the state of a object on the database. `inject-it` allows you to give this parameters to the provider on the fly using `additional_kwargs_to_provider` context manager. That will apply `functools.partial` into your provider for the given kwargs. Example:
+
+First, let's define the provider like usual:
+
+```python
+# client.py
+from inject_it import provider
+
+
+class Client:
+    def __init__(self, key):
+        self.key
+
+
+@provider
+def client_provider(api_key: str) -> Client:
+    return Client(key=api_key)
+```
+
+Notice that if we don't inject the `api_key` argument, `inject_it` won't be able to call the `client_provider` function, since it will be missing the `api_key` parameter. To solve this let's continue the example:
+
+```python
+# services.py
+from client import Client
+from inject_it import requires
+
+
+@requires(Client)
+def make_request(client: Client):
+    print(client.key)
+```
+
+So let's say you use the api_key for each user. And you receive an HTTP request into your view. Using django views, migth look like this:
+
+```python
+# views.py
+from client import Client
+from services import make_request
+from inject_it import additional_kwargs_to_provider
+
+
+def some_view(request):
+    user = request.user
+
+    with additional_kwargs_to_provider(Client, api_key=user.some_service_key):
+        make_request()  # client will be injected for the given user.some_service_key
+
+    ...
+```
+
+Two things is happening when you call the `additional_kwargs_to_provider` function:
+1- You will be patch the `Client` provider function to receive the kwargs you given.
+2- The kwargs must match the `client_provider` arguments.
+
+This helps if you are using some design patterns like the Strategy Pattern, swapping a service implementation for your current application state.
+
+## Depending on abstract classes
 
 `inject-it` allows you to `register_dependency` to another `bound_type`. This is useful if you don't really care about the concrete implementation, only the abstract one.
 Consider this example:
@@ -176,6 +234,6 @@ def provider_func():
 
 For the moment, you can only have one dependency for each type. So you can't have like two different `str` dependencies. When you register the second `str` you will be overriding the first. You can work around this by using specific types, instead of primitive types.
 
-# Testing
+## Testing
 
 Testing is made easy with `inject-it`, you just have to register your `mock`, `fake`, `stub` before calling your function. If you are using pytest, use fixtures.

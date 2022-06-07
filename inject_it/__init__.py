@@ -6,4 +6,4 @@ from .exceptions import (
     InvalidFunctionSignature,
     InjectedKwargAlreadyGiven,
 )
-from .register import register_dependency
+from .register import register_dependency, additional_kwargs_to_provider
