@@ -23,9 +23,9 @@ def at_least_one_type_required(*types: Class):
 
 
 def provider_returned_expected_type(obj: Any, type_: Class):
-    if type(obj) is not type_:
+    if type(obj) is not type_ and not issubclass(obj.__class__, type_):
         raise ProviderReturnValueTypeMismatch(
-            f"Invalid return type. Expected {type_} received: {type(obj)}"
+            f"Invalid return type. Expected {type_} or subclass of it, but received: {type(obj)}"
         )
 
 

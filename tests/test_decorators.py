@@ -1,9 +1,6 @@
 import pytest
 from inject_it import requires, provider, exceptions as exc, register_dependency
-
-
-class T:
-    pass
+from tests.conftest import T
 
 
 def test_requires_decorator_must_be_called_on_function():
@@ -75,6 +72,20 @@ def test_requires_decorator_positional_and_keyword_calls():
     f(a="123", b=1, c=1.0)
 
 
+def test_requires_decorator_can_require_superclass():
+    class Concrete(T):
+        pass
+
+    c = Concrete()
+    register_dependency(c, bound_type=T)
+
+    @requires(T)
+    def f(t: T):
+        pass
+
+    f()
+
+
 def test_provider_decorator_must_be_called_on_function():
     with pytest.raises(exc.InvalidFunctionDecoration):
 
@@ -125,6 +136,21 @@ def test_provider_function_can_also_require_for_dependencies():
     @requires(str)
     def api_provider(service_key: str):
         return T()
+
+    @requires(T)
+    def f(t: T):
+        return
+
+    f()
+
+
+def test_provider_decorator_can_provide_superclass():
+    class Z(T):
+        pass
+
+    @provider(T)
+    def z_provider():
+        return Z()
 
     @requires(T)
     def f(t: T):

@@ -120,6 +120,58 @@ This will have the same effect as calling `register_dependency` after creating t
 
 Your provider can also `requires` a dependency, but it must be registered before it.
 
+# Depending on abstract classes
+
+`inject-it` allows you to `register_dependency` to another `bound_type`. This is useful if you don't really care about the concrete implementation, only the abstract one.
+Consider this example:
+
+```python
+# main .py
+from inject_it import register_dependency
+
+class AbcService:
+    def do_work(self):
+        print("Working")
+
+
+class ConcreteService:
+    def do_work(self):
+        print("I'm really working")
+
+
+service = ConcreteService()
+register_dependency(service, bound_type=AbcService)
+
+
+# other_file.py
+from main import AbcService
+from inject_it import requires
+
+
+@requires(AbcService)
+def your_function(s: AbcService):
+    print(s)
+
+
+# Calling this function will return:
+your_function()
+"I'm really working"
+```
+
+The same is true for the `provider` decorator. You can pass to it the abstract class and return from it the concrete one.
+Using the same classes from the above example, consider:
+
+```python
+from inject_it import provider
+from main import AbcService, ConcreteService
+
+
+@provider(AbcService)
+def provider_func():
+    return ConcreteService()
+
+```
+
 ## Limitations
 
 For the moment, you can only have one dependency for each type. So you can't have like two different `str` dependencies. When you register the second `str` you will be overriding the first. You can work around this by using specific types, instead of primitive types.
