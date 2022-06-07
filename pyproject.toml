@@ -1,6 +1,6 @@
 [project]
 name = "inject-it"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = [
     {name = "Leandro de Souza", email = "leandrodesouzadev@gmail.com"},
@@ -11,7 +11,7 @@ requires-python = ">=3.9"
 
 [project.urls]
 Homepage = "https://github.com/plathanus-tech/python-inject-it"
-download_url = "https://github.com/plathanus-tech/python-inject-it/releases/tag/v0.1.0"
+download_url = "https://github.com/plathanus-tech/python-inject-it/releases/tag/v0.2.0"
 
 [project.optional-dependencies]
 [tool.pdm]
