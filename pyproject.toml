@@ -1,7 +1,10 @@
 [project]
 name = "inject-it"
 version = "0.2.1"
-description = ""
+description = """\
+Dependency injection done easy using python decorators! `inject-it` it's a python pure injection system.\
+You can checkout the extended version of the documentation on [GitHub](https://github.com/plathanus-tech/python-inject-it)\
+"""
 authors = [
     {name = "Leandro de Souza", email = "leandrodesouzadev@gmail.com"},
 ]
