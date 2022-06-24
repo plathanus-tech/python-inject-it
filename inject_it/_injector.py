@@ -18,6 +18,7 @@ def _get_dependency(t: Class) -> Optional[Any]:
     dep = dependencies.get(t, Ellipsis)
     if dep is not Ellipsis:
         return dep
+    return None
 
 
 def _get_provider(t: Class) -> Provider:
