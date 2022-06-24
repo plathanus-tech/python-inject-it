@@ -1,12 +1,22 @@
 import inspect
 from functools import wraps
-from typing import Callable
+from typing import Callable, Any
 
 from inject_it.register import register_provider
 
 from .stubs import Class, DecoratedFunction, Function
 from ._injector import get_injected_kwargs_for_signature
 from . import _checks
+
+
+def _helper(fnc, *args, **kwargs) -> Any:
+    if inspect.iscoroutinefunction(fnc):
+
+        async def f():
+            return await (fnc(*args, **kwargs))
+
+        return f()
+    return fnc(*args, **kwargs)
 
 
 def requires(*types: Class):
@@ -34,7 +44,9 @@ def requires(*types: Class):
     ```
     """
 
-    def decorator(fnc: DecoratedFunction) -> Callable[[DecoratedFunction], Function]:
+    def decorator(
+        fnc: DecoratedFunction,
+    ) -> Callable[[DecoratedFunction], Function]:
         _checks.wrapped_callable(fnc)
         _checks.at_least_one_type_required(*types)
         sig = inspect.signature(fnc)
@@ -47,7 +59,7 @@ def requires(*types: Class):
                 original_kwargs=kwargs, injected_kwargs=injected_kwargs
             )
             kwargs.update(injected_kwargs)
-            return fnc(*args, **kwargs)
+            return _helper(fnc, *args, **kwargs)
 
         return decorated
 
@@ -59,7 +71,9 @@ def provider(type_: Class, cache_dependency: bool = False):
     If `cache_dependency` is `True` then the function will be only called once.
     """
 
-    def decorator(fnc: DecoratedFunction) -> Callable[[DecoratedFunction], Function]:
+    def decorator(
+        fnc: DecoratedFunction,
+    ) -> Callable[[DecoratedFunction], Function]:
         _checks.wrapped_callable(fnc)
         register_provider(
             type_=type_,
@@ -69,7 +83,7 @@ def provider(type_: Class, cache_dependency: bool = False):
 
         @wraps(fnc)
         def decorated(*args, **kwargs):
-            return fnc(*args, **kwargs)
+            return _helper(fnc, *args, **kwargs)
 
         return decorated
 
