@@ -28,7 +28,7 @@ def test_requires_decorator_must_have_dependency_type_annotated_on_decorated_sig
         def f(a: str):
             pass
 
-        f("a")
+        f("abc")
 
 
 def test_requires_decorator_does_not_allow_duplicated_annotation_for_dependency_type():
@@ -84,6 +84,16 @@ def test_requires_decorator_can_require_superclass():
         pass
 
     f()
+
+
+@pytest.mark.asyncio
+async def test_requires_can_also_wraps_coroutine():
+    @requires(T)
+    async def f(t: T):
+        pass
+
+    register_dependency(T())
+    await f()
 
 
 def test_provider_decorator_must_be_called_on_function():

@@ -116,6 +116,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "pytest-asyncio"
+version = "0.18.3"
+requires_python = ">=3.7"
+summary = "Pytest support for asyncio"
+dependencies = [
+    "pytest>=6.1.0",
+]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 requires_python = ">=3.7"
@@ -129,7 +138,7 @@ summary = "Backported and Experimental Type Hints for Python 3.7+"
 
 [metadata]
 lock_version = "3.1"
-content_hash = "sha256:e5d4ee2d54750356ae45a07f9ab0a8d6992d0491ebc7244a3f5e7b3e91ca94cf"
+content_hash = "sha256:2ef4eb51cd4e631f87e69fa1c34607096be46a43b6ff94e09ac13c0762c2ea2f"
 
 [metadata.files]
 "atomicwrites 1.4.0" = [
@@ -233,6 +242,11 @@ content_hash = "sha256:e5d4ee2d54750356ae45a07f9ab0a8d6992d0491ebc7244a3f5e7b3e9
 "pytest 7.1.2" = [
     {file = "pytest-7.1.2-py3-none-any.whl", hash = "sha256:13d0e3ccfc2b6e26be000cb6568c832ba67ba32e719443bfe725814d3c42433c"},
     {file = "pytest-7.1.2.tar.gz", hash = "sha256:a06a0425453864a270bc45e71f783330a7428defb4230fb5e6a731fde06ecd45"},
+]
+"pytest-asyncio 0.18.3" = [
+    {file = "pytest_asyncio-0.18.3-1-py3-none-any.whl", hash = "sha256:16cf40bdf2b4fb7fc8e4b82bd05ce3fbcd454cbf7b92afc445fe299dabb88213"},
+    {file = "pytest_asyncio-0.18.3-py3-none-any.whl", hash = "sha256:8fafa6c52161addfd41ee7ab35f11836c5a16ec208f93ee388f752bea3493a84"},
+    {file = "pytest-asyncio-0.18.3.tar.gz", hash = "sha256:7659bdb0a9eb9c6e3ef992eef11a2b3e69697800ad02fb06374a210d85b29f91"},
 ]
 "tomli 2.0.1" = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
