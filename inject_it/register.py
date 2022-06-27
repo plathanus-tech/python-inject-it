@@ -1,10 +1,10 @@
 from contextlib import contextmanager
-import contextlib
 from functools import partial
 from typing import Any, Optional
+
 from .objects import Provider
 from .stubs import Class, Function
-from .exceptions import DependencyNotRegistered, InvalidDependency
+from .exceptions import InvalidDependency
 
 
 def register_dependency(obj: Any, bound_type: Optional[Class] = None) -> None:
