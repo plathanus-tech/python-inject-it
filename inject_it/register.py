@@ -1,3 +1,4 @@
+import importlib
 from contextlib import contextmanager
 from functools import partial
 from typing import Any, Optional
@@ -62,3 +63,19 @@ def additional_kwargs_to_provider(type_: Class, **kwargs):
     )
     yield
     providers[type_] = provider
+
+
+def register_provider_modules(*modules: str):
+    """Shortcut to register all given modules with providers functions.
+    The given modules are passed directly to `importlib.import_module', so it must be a valid namespace.
+    If no `provider` is registered in a module, then raises `InvalidDependency`.
+    """
+    from ._injector import providers
+
+    for mod in modules:
+        n_of_providers = len(providers)
+        importlib.import_module(mod)
+        if len(providers) == n_of_providers:
+            raise InvalidDependency(
+                f"No provider was registered on {mod=} Did you forgot the `provider` decorator?"
+            )

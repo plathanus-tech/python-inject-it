@@ -5,6 +5,7 @@ from inject_it import (
     provider,
     requires,
     additional_kwargs_to_provider,
+    register_provider_modules,
 )
 from tests.conftest import T
 
@@ -45,3 +46,8 @@ def test_additional_kwargs_for_provider_succeeds_for_correct_call():
     # should fail.
     with pytest.raises(exc.InvalidDependency):
         f()
+
+
+def test_register_provider_modules_raises_for_no_provider_in_module():
+    with pytest.raises(exc.InvalidDependency):
+        register_provider_modules("tests.test_decorators")
