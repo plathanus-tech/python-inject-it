@@ -230,9 +230,45 @@ def provider_func():
 
 ```
 
+When one defines a `provider` this provider function requires to be imported so that inject-it is aware of this provider. Usually, you can do this on your application entrypoint, a `main.py` file for example. However, it may feel weird importing a module only for registering purposes, and your IDE will tell you that you imported a module, but never used it. For example:
+
+```python
+# main.py
+from your_application import providers  # <- Imported, but unused in this scope
+
+def main():
+    print("Do stuff")
+    ...
+
+main()
+```
+
+`inject-it` allows you to register your providers in a more fashion way. It's similar to what's Django does with applications.
+
+## Register Providers Modules
+
+Since importing a provider file in runtime just for registering may feel ackward, as mentioned above, `inject-it` exposes a `register_provider_modules` function that one can use to register all its providers on a single call. Using the same example from above, it will look like:
+
+```python
+from inject_it import register_provider_modules
+
+def main():
+    print("Do stuff")
+    ...
+
+register_provider_modules(
+    "your_application.providers",
+    "your_application.another_module.my_providers",
+)
+main()
+```
+
+`register_provider_modules` any number of providers modules, it will look for any function decorated with `provider` in those modules. If no provider is found an exception is raised.
+
 ## Limitations
 
 For the moment, you can only have one dependency for each type. So you can't have like two different `str` dependencies. When you register the second `str` you will be overriding the first. You can work around this by using specific types, instead of primitive types.
+In the moment, you can't use functions as dependencies.
 
 ## Testing
 
