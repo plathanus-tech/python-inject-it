@@ -1,10 +1,10 @@
 [project]
 name = "inject-it"
-version = "0.2.2"
+version = "0.3.0"
 description = """\
-Dependency injection done easy using python decorators! `inject-it` it's a python pure injection system.\
-You can checkout the extended version of the documentation on [GitHub](https://github.com/plathanus-tech/python-inject-it)\
+Dependency injection done easy using python decorators!
 """
+readme = "README.md"
 authors = [
     {name = "Leandro de Souza", email = "leandrodesouzadev@gmail.com"},
 ]
@@ -14,7 +14,7 @@ requires-python = ">=3.9"
 
 [project.urls]
 Homepage = "https://github.com/plathanus-tech/python-inject-it"
-download_url = "https://github.com/plathanus-tech/python-inject-it/releases/tag/v0.2.2"
+download_url = "https://github.com/plathanus-tech/python-inject-it/releases/tag/v0.3.0"
 
 [project.optional-dependencies]
 [tool.pdm]
