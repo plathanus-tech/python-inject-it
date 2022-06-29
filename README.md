@@ -245,6 +245,68 @@ main()
 
 `inject-it` allows you to register your providers in a more fashion way. It's similar to what's Django does with applications.
 
+## Depending on Callable's
+
+`inject-it` also allows you to depend on a callable. This is possible using the `typing.Protocol` and `typing.runtime_checkable` decorator. Check out this example:
+
+```python
+# protocols.py
+from typing import Protocol, runtime_checkable
+
+
+@runtime_checkable
+class SumTwoNumbersFunc(Protocol):
+    def __call__(self, a, b) -> int:
+        ...
+
+
+# providers.py
+from inject_it import provider
+from protocols import SumTwoNumbersFunc
+
+def sum_two(a, b) -> int:
+    return a + b
+
+
+def sum_two_with_additional_fee(a, b) -> int:
+    return a + b + 10
+
+
+@provider(SumTwoNumberFunc)
+def get_two_num_sum_func(is_angry=False):
+    if is_angry:
+        return sum_two_with_additional_fee
+    return sum_two
+
+
+# services.py
+from protocols import SumTwoNumberFunc
+from inject_it import requires
+
+
+@requires(SumTwoNumberFunc)
+def charge_order(fnc: SumTwoNumberFunc):
+    print(fnc(1, 1))
+
+
+# main.py
+import providers # importing so it's registered by inject-it
+from services import charge_order
+from protocols import SumTwoNumbersFunc
+from inject_it import additional_kwargs_to_provider
+
+
+def main():
+    charge_order()  # prints 2
+
+    with additional_kwargs_to_provider(SumTwoNumberFunc, is_angry=True):
+        charge_order()  # prints 12
+
+
+if __name__ == "__main__":
+    main()
+```
+
 ## Register Providers Modules
 
 Since importing a provider file in runtime just for registering may feel ackward, as mentioned above, `inject-it` exposes a `register_provider_modules` function that one can use to register all its providers on a single call. Using the same example from above, it will look like:
@@ -267,8 +329,7 @@ main()
 
 ## Limitations
 
-For the moment, you can only have one dependency for each type. So you can't have like two different `str` dependencies. When you register the second `str` you will be overriding the first. You can work around this by using specific types, instead of primitive types.
-In the moment, you can't use functions as dependencies.
+For the moment, you can only have one dependency for each type. So you can't have like two different `str` dependencies. When you register the second `str` you will be overriding the first. You can work around this by using specific types, instead of primitive types. Other way around is registering a provider with conditional ways of creating a object.
 
 ## Testing
 
