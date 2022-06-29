@@ -89,7 +89,7 @@ The code above works, but in the snippet above for simplicity we didn't called `
 You can also define a dependency `provider`. That is a function that will return the dependency object. This is useful if you need a different instance everytime. Using the same example from before:
 
 ```python
-# main.py
+# providers.py
 from service import SomeService
 from inject_it import provider
 
@@ -104,7 +104,7 @@ def some_service_provider():
 In this example, everytime a function `requires` for `SomeService` this function will be called. If it's expensive to create the object, you can cache it. You do it like:
 
 ```python
-# main.py
+# providers.py
 from service import SomeService
 from inject_it import provider
 
@@ -136,7 +136,7 @@ class Client:
         self.key
 
 
-@provider
+@provider(Client)
 def client_provider(api_key: str) -> Client:
     return Client(key=api_key)
 ```
