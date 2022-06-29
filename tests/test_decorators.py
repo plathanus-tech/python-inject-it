@@ -1,3 +1,4 @@
+from typing import Protocol, runtime_checkable
 import pytest
 from inject_it import requires, provider, exceptions as exc, register_dependency
 from tests.conftest import T
@@ -167,3 +168,20 @@ def test_provider_decorator_can_provide_superclass():
         return
 
     f()
+
+
+def test_provider_decorator_can_provide_protocol_callables():
+    @runtime_checkable
+    class F(Protocol):
+        def __call__(self, a: str) -> str:
+            ...
+
+    @provider(F)
+    def protocol_provider() -> F:
+        return lambda a: a
+
+    @requires(F)
+    def dependant(f: F):
+        return f("ABC")
+
+    assert dependant() == "ABC"
